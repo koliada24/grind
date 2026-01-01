@@ -1,4 +1,4 @@
-Lecture 8. Threads synchronization overview
+## Lecture 8. Threads synchronization overview
 
 In this lecture the problem of shared resources in async programming
 was covered. To present the problem in-practice, the demo app with
@@ -6,9 +6,9 @@ two counters and two threads on which the increment method was running
 were created.
 
 The idea is that there is 3 steps of working with recources:
-1. Getting recource value;
-2. Taking some actions;
-3. Setting updated resoirce value;
+- Getting recource value;
+- Taking some actions;
+- Setting updated resoirce value;
 
 The problem is if there are, for example, two threads working with
 the same resource, there is a possibility that threads won't
