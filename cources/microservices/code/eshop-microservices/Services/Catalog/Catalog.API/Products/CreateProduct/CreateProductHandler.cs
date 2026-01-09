@@ -1,0 +1,38 @@
+﻿using BuildingBlocks.CQRS;
+using Catalog.API.Models;
+
+namespace Catalog.API.Products.CreateProduct
+{
+    public record CreateProductCommand(
+        string Name,
+        List<string> Categories,
+        string Description,
+        string ImageFile,
+        decimal Price
+    ) : ICommand<CreateProductResult>;
+
+    public record CreateProductResult(Guid Id);
+
+    internal class CreateProductHandler : ICommandHandler<CreateProductCommand, CreateProductResult>
+    {
+        public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+        {
+            var product = new Product
+            {
+                Name = command.Name,
+                Category = command.Categories,
+                Description = command.Description,
+                ImageFile = command.ImageFile,
+                Price = command.Price,
+            };
+
+            // save to database (not implemented)
+
+            // return the result with the new product ID
+
+            var guid = Guid.NewGuid();
+
+            return new CreateProductResult(guid);
+        }
+    }
+}
