@@ -1,7 +1,4 @@
-﻿using Marten.Linq.QueryHandlers;
-using Microsoft.AspNetCore.Session;
-
-namespace Catalog.API.Products.GetProducts
+﻿namespace Catalog.API.Products.GetProducts
 {
     public record GetProductsQuery
         : IQuery<GetProductsQueryResult>;
