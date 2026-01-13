@@ -14,17 +14,17 @@
         (IDocumentSession session, ILogger<CreateProductCommandHandler> logger)
         : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
-        public async Task<CreateProductResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
-            logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", request);
+            logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", command);
 
             var product = new Product
             {
-                Name = request.Name,
-                Category = request.Categories,
-                Description = request.Description,
-                ImageFile = request.ImageFile,
-                Price = request.Price,
+                Name = command.Name,
+                Categories = command.Categories.Select(x => x.ToLower()).ToList(),
+                Description = command.Description,
+                ImageFile = command.ImageFile,
+                Price = command.Price,
             };
 
             session.Store(product);
