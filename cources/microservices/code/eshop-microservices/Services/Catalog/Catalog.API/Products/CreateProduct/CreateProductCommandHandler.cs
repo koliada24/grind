@@ -10,17 +10,21 @@
 
     public record CreateProductResult(Guid Id);
 
-    internal class CreateProductCommandHandler(IDocumentSession session) : ICommandHandler<CreateProductCommand, CreateProductResult>
+    internal class CreateProductCommandHandler
+        (IDocumentSession session, ILogger<CreateProductCommandHandler> logger)
+        : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
-        public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+        public async Task<CreateProductResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
+            logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", request);
+
             var product = new Product
             {
-                Name = command.Name,
-                Category = command.Categories,
-                Description = command.Description,
-                ImageFile = command.ImageFile,
-                Price = command.Price,
+                Name = request.Name,
+                Category = request.Categories,
+                Description = request.Description,
+                ImageFile = request.ImageFile,
+                Price = request.Price,
             };
 
             session.Store(product);

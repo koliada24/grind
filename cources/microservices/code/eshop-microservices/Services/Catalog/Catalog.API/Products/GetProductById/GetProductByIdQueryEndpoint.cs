@@ -10,7 +10,9 @@
             {
                 var result = await sender.Send(new GetProductByIdQuery(id));
 
-                return Results.Ok(new GetProductByIdResponse(result.Product));
+                var response = result.Adapt<GetProductByIdResponse>();
+
+                return Results.Ok(response);
             })
             .WithName("GetProductById")
             .Produces<GetProductByIdResponse>(StatusCodes.Status200OK)
