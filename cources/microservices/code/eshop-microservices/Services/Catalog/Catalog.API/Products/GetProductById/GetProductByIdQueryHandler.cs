@@ -5,6 +5,14 @@ namespace Catalog.API.Products.GetProductById
 
     public record GetProductByIdResult(Product? Product);
 
+    public class GetProductByIdQueryValidator : AbstractValidator<GetProductByIdQuery>
+    {
+        public GetProductByIdQueryValidator()
+        {
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
+        }
+    }
+
     internal class GetProductByIdQueryHandler
         (IDocumentSession session, ILogger<GetProductByIdQueryHandler> logger)
         : IQueryHandler<GetProductByIdQuery, GetProductByIdResult>
