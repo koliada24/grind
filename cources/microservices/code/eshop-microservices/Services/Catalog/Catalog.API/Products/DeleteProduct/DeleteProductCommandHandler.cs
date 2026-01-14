@@ -20,7 +20,14 @@
         {
             logger.LogInformation("DeleteProductHandler.Handle called with {@Request}", command);
 
-            session.Delete<Product>(command.Id);
+            var product = await session.LoadAsync<Product>(command.Id, cancellationToken);
+
+            if (product == null) 
+            { 
+                throw new ProductNotFoundException(command.Id);
+            }
+
+            session.Delete(product);
             await session.SaveChangesAsync(cancellationToken);
 
             return new DeleteProductResult(IsSuccess: true);
