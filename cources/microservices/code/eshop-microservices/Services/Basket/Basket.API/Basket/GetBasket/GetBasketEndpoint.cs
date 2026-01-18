@@ -1,10 +1,28 @@
 ﻿namespace Basket.API.Basket.GetBasket
 {
+    public record GetBasketRequest(string UserName);
+
+    public record GetBasketResponse(ShoppingCart Cart);
+
     public class GetBasketEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            throw new NotImplementedException();
+            app.MapGet("/basket/{userName}", async (string userName, ISender sender, CancellationToken cancellationToken) =>
+            {
+                var query = new GetBasketQuery(userName);
+
+                var result = await sender.Send(query, cancellationToken);
+
+                var response = result.Adapt<GetBasketResponse>();
+
+                return Results.Ok(response);
+            })
+            .Produces<GetBasketResponse>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithName("GetBasket")
+            .WithSummary("Get Basket")
+            .WithDescription("Get Basket");
         }
     }
 }
