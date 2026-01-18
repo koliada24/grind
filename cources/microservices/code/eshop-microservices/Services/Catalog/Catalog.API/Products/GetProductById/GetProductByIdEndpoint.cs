@@ -2,7 +2,7 @@
 {
     public record GetProductByIdResponse(Product Product);
 
-    public class GetProductByIdQueryEndpoint : ICarterModule
+    public class GetProductByIdEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
