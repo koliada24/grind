@@ -13,16 +13,17 @@
         }
     }
 
-    public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, StoreBasketResult>
+    public class StoreBasketCommandHandler(IBasketRepository basketRepository) : ICommandHandler<StoreBasketCommand, StoreBasketResult>
     {
         public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
         {
             var cart = command.Cart;
 
-            // store carqt in DB
-            // update cache
+            await basketRepository.StoreBasketAsync(cart, cancellationToken);
             
-            return new StoreBasketResult("swd");
+            var result = new StoreBasketResult(cart.UserName);
+
+            return result;
         }
     }
 }

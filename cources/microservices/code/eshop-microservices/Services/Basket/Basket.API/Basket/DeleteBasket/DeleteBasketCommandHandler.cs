@@ -13,13 +13,17 @@
         }
     }
 
-    public class DeleteBasketCommandHandler : ICommandHandler<DeleteBasketCommand, DeleteBasketResult>
+    public class DeleteBasketCommandHandler(IBasketRepository basketRepository) : ICommandHandler<DeleteBasketCommand, DeleteBasketResult>
     {
         public async Task<DeleteBasketResult> Handle(DeleteBasketCommand request, CancellationToken cancellationToken)
         {
-            //TODO: Implement the actual deletion logic here.
+            var userName = request.UserName;
 
-            return new DeleteBasketResult(true);
+            var deletionResult = await basketRepository.DeleteBasketAsync(userName, cancellationToken);
+
+            var result = new DeleteBasketResult(deletionResult);
+
+            return result;
         }
     }
 }
