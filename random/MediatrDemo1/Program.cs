@@ -1,6 +1,8 @@
 using MediatR;
+using MediatrDemo1.Behaviors;
 using MediatrDemo1.Data;
 using MediatrDemo1.Handlers;
+using System.Reflection.Emit;
 
 namespace MediatrDemo1
 {
@@ -13,6 +15,9 @@ namespace MediatrDemo1
             builder.Services.AddMediatR(config =>
             {
                 config.RegisterServicesFromAssemblyContaining<Program>();
+                config.AddOpenBehavior(typeof(RequestWrapperBehavior<,>));
+                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+                config.AddOpenBehavior(typeof(OperationTimeLoggingBehavior<,>));
             });
             builder.Services.AddSingleton<IToDoRepository, ToDoRepository>();
             
