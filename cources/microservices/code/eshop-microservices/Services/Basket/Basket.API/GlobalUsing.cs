@@ -8,3 +8,5 @@ global using FluentValidation;
 global using BuildingBlocks.Behaviors;
 global using BuildingBlocks.Exceptions;
 global using Basket.API.Data;
+global using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+global using BuildingBlocks.Exceptions.Handlers;
