@@ -19,19 +19,42 @@
             return couponModel;
         }
 
-        public override Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
+        public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
         {
-            return base.CreateDiscount(request, context);
+            var coupon = request.Coupon.Adapt<Coupon>();
+
+            dbContext.Coupons.Add(coupon);
+            await dbContext.SaveChangesAsync();
+
+            var response = coupon.Adapt<CouponModel>();
+            return response;
         }
 
-        public override Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
+        public override async Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
         {
-            return base.UpdateDiscount(request, context);
+            var coupon = request.Coupon.Adapt<Coupon>();
+
+            dbContext.Coupons.Update(coupon);
+            await dbContext.SaveChangesAsync();
+
+            return coupon.Adapt<CouponModel>();
         }
 
-        public override Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
+        public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
         {
-            return base.DeleteDiscount(request, context);
+            var couponToDelete = await dbContext.Coupons.FirstOrDefaultAsync(x => x.ProductName == request.ProductName);
+
+            var list = dbContext.Coupons.ToList();
+
+            if (couponToDelete == null)
+            {
+                return new DeleteDiscountResponse { Success = false };
+            }
+            
+            dbContext.Coupons.Remove(couponToDelete);
+            await dbContext.SaveChangesAsync();
+            
+            return new DeleteDiscountResponse { Success = true };
         }
     }
 }
