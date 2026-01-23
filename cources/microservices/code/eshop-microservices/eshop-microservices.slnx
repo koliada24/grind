@@ -2,15 +2,15 @@
   <Folder Name="/BuildingBlocks/">
     <Project Path="BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj" Id="65fe06e7-023f-40d6-ad63-4c55314d8436" />
   </Folder>
-  <Folder Name="/Discount/">
-    <Project Path="Services/Discount/Discount.Grpc/Discount.Grpc.csproj" Id="3bd6c8c3-ddff-4b01-9d39-383a2ab16605" />
-  </Folder>
   <Folder Name="/Services/" />
   <Folder Name="/Services/Basket/">
     <Project Path="Services/Basket/Basket.API/Basket.API.csproj" Id="91e24b1a-ad1a-4541-aaca-34be4a478377" />
   </Folder>
   <Folder Name="/Services/Catalog/">
     <Project Path="Services/Catalog/Catalog.API/Catalog.API.csproj" />
+  </Folder>
+  <Folder Name="/Services/Discount/">
+    <Project Path="Services/Discount/Discount.Grpc/Discount.Grpc.csproj" Id="3bd6c8c3-ddff-4b01-9d39-383a2ab16605" />
   </Folder>
   <Project Path="docker-compose.dcproj">
     <Build />
