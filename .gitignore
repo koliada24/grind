@@ -384,3 +384,4 @@ fabric.properties
 *.db-journal
 
 # specific databases' names
+discountdb*
