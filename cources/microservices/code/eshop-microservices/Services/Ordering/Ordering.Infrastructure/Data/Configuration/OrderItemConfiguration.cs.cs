@@ -8,6 +8,14 @@
             builder.Property(x => x.Id).HasConversion(
                 orderItemId => orderItemId.Value,
                 oiId => OrderItemId.Of(oiId));
+
+            builder.HasOne<Product>()
+                .WithMany()
+                .HasForeignKey(oi => oi.ProductId);
+
+            builder.Property(oi => oi.Quantity).IsRequired();
+
+            builder.Property(oi => oi.Price).IsRequired();
         }
     }
 }
