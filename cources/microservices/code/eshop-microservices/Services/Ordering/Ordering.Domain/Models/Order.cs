@@ -22,8 +22,7 @@
             , OrderName orderName
             , Address shippingAddress
             , Address billingAddress
-            , Payment payment
-            , OrderStatus orderStatus)
+            , Payment payment)
         {
             var order = new Order
             {
@@ -33,7 +32,7 @@
                 ShippingAddress = shippingAddress,
                 BillingAddress = billingAddress,
                 Payment = payment,
-                Status = orderStatus
+                Status = OrderStatus.Pending
             };
 
             order.AddDomainEvent(new OrderCreatedEvent(order));

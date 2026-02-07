@@ -17,7 +17,7 @@
         {
             await SeedCustomerAsync(context);
             await SeedProductAsync(context);
-            await SeedOrderAndItemsAsync(context);
+            await SeedOrdersWithItemsAsync(context);
         }
 
         private static async Task SeedCustomerAsync(ApplicationDbContext context)
@@ -30,12 +30,20 @@
         }
         private static async Task SeedProductAsync(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            if (!await context.Products.AnyAsync())
+            {
+                await context.Products.AddRangeAsync(InitialData.Products);
+                await context.SaveChangesAsync();
+            }
         }
 
-        private static async Task SeedOrderAndItemsAsync(ApplicationDbContext context)
+        private static async Task SeedOrdersWithItemsAsync(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            if (!await context.Orders.AnyAsync())
+            {
+                await context.Orders.AddRangeAsync(InitialData.OrdersWithItems);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
