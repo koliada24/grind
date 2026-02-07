@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace Ordering.Infrastructure.Data.Extensions
+﻿namespace Ordering.Infrastructure.Data.Extensions
 {
     public static class DatabaseExtension
     {
@@ -11,6 +9,33 @@ namespace Ordering.Infrastructure.Data.Extensions
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
             context.Database.MigrateAsync().GetAwaiter().GetResult();
+
+            await SeedAsync(context);
+        }
+
+        private static async Task SeedAsync(ApplicationDbContext context)
+        {
+            await SeedCustomerAsync(context);
+            await SeedProductAsync(context);
+            await SeedOrderAndItemsAsync(context);
+        }
+
+        private static async Task SeedCustomerAsync(ApplicationDbContext context)
+        {
+            if (!await context.Customers.AnyAsync())
+            {
+                await context.Customers.AddRangeAsync(InitialData.Customers);
+                await context.SaveChangesAsync();
+            }
+        }
+        private static async Task SeedProductAsync(ApplicationDbContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static async Task SeedOrderAndItemsAsync(ApplicationDbContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }
