@@ -8,6 +8,7 @@
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
+                options.AddInterceptors(new AuditableEntityInterceptor());
                 options.UseSqlServer(connectionString);
             });
             
