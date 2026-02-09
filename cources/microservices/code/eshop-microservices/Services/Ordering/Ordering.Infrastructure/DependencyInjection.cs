@@ -6,9 +6,12 @@
         {
             var connectionString = configuration.GetConnectionString("Database");
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+            services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+
+            services.AddDbContext<ApplicationDbContext>((IServiceProvider serviceProvider, DbContextOptionsBuilder options) =>
             {
-                options.AddInterceptors(new AuditableEntityInterceptor());
+                options.AddInterceptors(serviceProvider.GetService<ISaveChangesInterceptor>()!);
                 options.UseSqlServer(connectionString);
             });
             
