@@ -11,7 +11,7 @@
 
             services.AddDbContext<ApplicationDbContext>((IServiceProvider serviceProvider, DbContextOptionsBuilder options) =>
             {
-                options.AddInterceptors(serviceProvider.GetService<ISaveChangesInterceptor>()!);
+                options.AddInterceptors(serviceProvider.GetServices<ISaveChangesInterceptor>()!);
                 options.UseSqlServer(connectionString);
             });
             
