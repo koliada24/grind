@@ -14,6 +14,8 @@
                 options.AddInterceptors(serviceProvider.GetServices<ISaveChangesInterceptor>()!);
                 options.UseSqlServer(connectionString);
             });
+
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             
             return services;
         }
