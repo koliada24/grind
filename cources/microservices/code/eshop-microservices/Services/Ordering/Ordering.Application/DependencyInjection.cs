@@ -1,6 +1,4 @@
-﻿using BuildingBlocks.Behaviors;
-
-namespace Ordering.Application
+﻿namespace Ordering.Application
 {
     public static class DependencyInjection
     {
