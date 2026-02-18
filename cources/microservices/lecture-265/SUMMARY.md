@@ -9,3 +9,6 @@ Key points:
 
 Questions:
 1) What is "busy interaction" in microservices?
+
+Answers:
+1) Busy interaction - same as chatty interaction - case when a service needs to make a lot of small calls to the service to complete the request
