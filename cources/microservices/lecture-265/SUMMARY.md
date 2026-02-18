@@ -1,4 +1,4 @@
-## Lecture 198. Microservices Asynchronous Communication
+## Lecture 265. Microservices Asynchronous Communication
 
 Key points:
 - Asynchronous communication - client sends a request to the server and does not wait for the response. Client should not have been blocked while waiting for the response.
