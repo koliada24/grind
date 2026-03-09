@@ -1,4 +1,4 @@
-## Lecture 270. What is RabbitMQ and its main components.
+## Lecture 270. What is RabbitMQ and its main components
 
 - RabbitMQ is a message broker software that implements the AMQP (Advanced Message Queing Protocol).
 - Similar softwares: Apache Kafka, Msmq, Microsoft Azure Service Bus, Kestrel, ActiveMQ and so on.
