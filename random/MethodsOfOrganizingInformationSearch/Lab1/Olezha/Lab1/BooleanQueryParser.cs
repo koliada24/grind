@@ -26,6 +26,8 @@ class BooleanQueryParser
     public List<Clause> ParseKNF(string query, HashSet<string> validTerms)
     {
         query = query.Trim();
+        
+        query = ApplyDeMorgansLaw(query);
 
         var clauses = new List<Clause>();
 
@@ -81,6 +83,38 @@ class BooleanQueryParser
         }
 
         return clauses;
+    }
+
+    private string ApplyDeMorgansLaw(string query)
+    {
+        var pattern = @"NOT\s*\(([^()]*)\)";
+        
+        while (Regex.IsMatch(query, pattern))
+        {
+            query = Regex.Replace(query, pattern, match =>
+            {
+                var innerExpression = match.Groups[1].Value.Trim();
+                
+                if (innerExpression.Contains(" OR "))
+                {
+                    var orParts = SplitByTopLevelOperator(innerExpression, "OR");
+                    var transformed = string.Join(" AND ", orParts.Select(p => $"NOT {p.Trim()}"));
+                    return transformed;
+                }
+                else if (innerExpression.Contains(" AND "))
+                {
+                    return $"NOT ({innerExpression})";
+                }
+                else if (innerExpression.Contains(" OR "))
+                {
+                    return $"NOT {innerExpression}";
+                }
+
+                throw new InvalidOperationException("Unknown operator");
+            });
+        }
+        
+        return query;
     }
 
     private List<string> SplitByTopLevelOperator(string query, string op)
