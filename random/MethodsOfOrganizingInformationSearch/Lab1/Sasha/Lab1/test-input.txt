@@ -11,7 +11,7 @@ docs:
 5. cat dog fox
 
 queries:                                Expected        Actual
-1. cat AND dog                          {2,5}           {2,5}
+1. fox OR dog                           {2,3,4,5}       {2,3,4,5}
 2. (cat AND dog) OR fox                 {2,3,4,5}       {2,3,4,5}
 3. cat OR NOT dog                       {1,2,4,5}       {1,2,4,5}
 4. (cat AND fox) OR NOT dog             {1,4,5}         {1,4,5}
