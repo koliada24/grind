@@ -1,0 +1,21 @@
+terms:
+1. cat
+2. dog
+3. fox
+
+docs:
+1. cat cat cat
+2. cat dog
+3. dog fox
+4. cat fox
+5. cat dog fox
+
+queries:                                Expected        Actual
+1. cat AND dog                          {2,5}           {2,5}
+2. (cat AND dog) OR fox                 {2,3,4,5}       {2,3,4,5}
+3. cat OR NOT dog                       {1,2,4,5}       {1,2,4,5}
+4. (cat AND fox) OR NOT dog             {1,4,5}         {1,4,5}
+5. NOT cat OR dog                       {2,3,5}         {2,3,5}
+6. (cat AND dog) OR (dog AND fox)       {2,3,5}         {2,3,5}
+7. cat OR dog OR fox                    {1,2,3,4,5}     {1,2,3,4,5}
+8. (NOT cat) OR (NOT dog)               {1,3,4}         {1,3,4}
