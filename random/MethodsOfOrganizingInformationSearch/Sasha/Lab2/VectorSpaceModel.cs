@@ -89,7 +89,6 @@ public class VectorSpaceModel
             double tf;
             if (queryTermFreq.ContainsKey(term))
             {
-                // Formula for variant 14: tf(t,q) = f_{t,q} / Σ f_{t',q}
                 tf = totalTermsInQuery > 0 ? (double)queryTermFreq[term] / totalTermsInQuery : 0;
             }
             else

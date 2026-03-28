@@ -58,6 +58,14 @@
         Console.WriteLine();
 
         double threshold = 0.0;
+        Console.Write("Enter similarity threshold [0,0-1,0] (default 0,0): ");
+        string thresholdInput = Console.ReadLine() ?? "0,0";
+        if (double.TryParse(thresholdInput, out double t) && t >= 0.0 && t <= 1.0)
+        {
+            threshold = t;
+        }
+
+        Console.WriteLine();
 
         while (true)
         {
