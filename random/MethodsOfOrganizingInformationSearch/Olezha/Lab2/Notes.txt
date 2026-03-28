@@ -1,0 +1,5 @@
+TF (Term Frequency) - it is a measurement of how often term appears
+in a specific document.
+
+IDF (Inverse Document Frequency) - it is a measurement of how rare
+the term appears accross all documents.
