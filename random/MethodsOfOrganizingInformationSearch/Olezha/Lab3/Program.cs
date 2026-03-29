@@ -6,7 +6,7 @@
         Console.WriteLine("Variant 11: Domain — Programming, Complex Query — Wildcard");
         Console.WriteLine();
 
-        string esUrl = "http://localhost:9200";
+        string esUrl = "https://localhost:9200";
         string esUser = "elastic";
         string esPass = "O9jYdcC29=6sOdkSOrfb";
         string index = "programming_languages";
@@ -100,8 +100,8 @@
 
     static async Task SearchTerm(ElasticsearchService es)
     {
-        Console.WriteLine("Field (name, createdBy, currentVersion, website): ");
-        var field = Console.ReadLine() ?? "name";
+        Console.WriteLine("Field (Name, YearCreated, CreatedBy, Website): ");
+        var field = Console.ReadLine() ?? "Name";
         Console.Write("Value: ");
         var value = Console.ReadLine() ?? "";
         var query = $"{{ \"query\": {{ \"term\": {{ \"{field}\": {{ \"value\": \"{value}\" }} }} }} }}";
