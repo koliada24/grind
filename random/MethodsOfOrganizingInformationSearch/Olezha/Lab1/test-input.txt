@@ -10,7 +10,7 @@ docs:
 4. cat fox
 5. cat dog fox
 
-    Queries                         Expected        Actual
+Queries                             Expected        Actual
 1. cat AND dog                      {2,5}           {2,5}
 2. (cat OR dog) AND fox             {3,4,5}         {3,4,5}
 3. cat AND NOT dog                  {1,4}           {1,4}

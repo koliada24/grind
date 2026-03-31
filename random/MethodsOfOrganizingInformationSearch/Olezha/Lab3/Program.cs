@@ -124,7 +124,7 @@
 
     static async Task SearchWildcard(ElasticsearchService es)
     {
-        Console.WriteLine("Field (name, createdBy, currentVersion, website): ");
+        Console.WriteLine("Field (Name, YearCreated, CreatedBy, Website): ");
         var field = Console.ReadLine() ?? "name";
         Console.Write("Pattern (use * and ?): ");
         var pattern = Console.ReadLine() ?? "";
