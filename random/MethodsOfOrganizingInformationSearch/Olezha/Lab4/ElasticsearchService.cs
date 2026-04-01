@@ -16,14 +16,12 @@ public class ElasticsearchService
         _baseUrl = baseUrl.TrimEnd('/');
         _index = index;
         
-        // JSON serializer options with camelCase naming
         _jsonOptions = new JsonSerializerOptions 
         { 
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
         
-        // Allow self-signed certificates
         var handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
         

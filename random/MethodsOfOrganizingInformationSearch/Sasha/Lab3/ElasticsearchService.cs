@@ -13,7 +13,6 @@ public class ElasticsearchService
         _baseUrl = baseUrl.TrimEnd('/');
         _index = index;
         
-        // Allow self-signed certificates
         var handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
         
@@ -27,13 +26,11 @@ public class ElasticsearchService
     {
         try
         {
-            // Delete index if exists
             await _client.DeleteAsync($"{_baseUrl}/{_index}");
             Console.WriteLine($"[DEBUG] Deleted old index");
         }
         catch { }
         
-        // Create new index with mapping
         var resp = await _client.PutAsync($"{_baseUrl}/{_index}", new StringContent(mappingJson, Encoding.UTF8, "application/json"));
         Console.WriteLine($"[DEBUG] Created new index");
         return resp.IsSuccessStatusCode;
@@ -55,7 +52,6 @@ public class ElasticsearchService
         using var docObj = JsonDocument.Parse(respJson);
         var id = docObj.RootElement.GetProperty("_id").GetString();
         
-        // Refresh index to ensure document is immediately searchable
         await _client.PostAsync($"{_baseUrl}/{_index}/_refresh", null);
         Console.WriteLine($"[DEBUG] Index refreshed");
         

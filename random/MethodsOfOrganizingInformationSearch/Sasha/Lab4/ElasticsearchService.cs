@@ -15,14 +15,12 @@ public class ElasticsearchService
         _baseUrl = baseUrl.TrimEnd('/');
         _index = index;
         
-        // JSON serializer options with camelCase naming
         _jsonOptions = new JsonSerializerOptions 
         { 
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
         
-        // Allow self-signed certificates
         var handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
         
@@ -36,13 +34,11 @@ public class ElasticsearchService
     {
         try
         {
-            // Delete index if exists
             await _client.DeleteAsync($"{_baseUrl}/{_index}");
             Console.WriteLine($"[DEBUG] Deleted old index");
         }
         catch { }
         
-        // Create new index with mapping
         var resp = await _client.PutAsync($"{_baseUrl}/{_index}", new StringContent(mappingJson, Encoding.UTF8, "application/json"));
         Console.WriteLine($"[DEBUG] Created new index");
         return resp.IsSuccessStatusCode;
@@ -66,7 +62,6 @@ public class ElasticsearchService
         
         // Refresh index to ensure document is immediately searchable
         await _client.PostAsync($"{_baseUrl}/{_index}/_refresh", null);
-        Console.WriteLine($"[DEBUG] Index refreshed");
         
         return id;
     }

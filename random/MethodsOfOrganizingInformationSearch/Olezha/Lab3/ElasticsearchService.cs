@@ -15,7 +15,6 @@ public class ElasticsearchService
         _baseUrl = baseUrl.TrimEnd('/');
         _index = index;
         
-        // Allow self-signed certificates
         var handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
         
