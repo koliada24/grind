@@ -27,13 +27,11 @@ public class ElasticsearchService
         try
         {
             await _client.DeleteAsync($"{_baseUrl}/{_index}");
-            Console.WriteLine($"[DEBUG] Deleted old index");
         }
         catch { }
         
         var resp = await _client.PutAsync($"{_baseUrl}/{_index}", new StringContent(mappingJson, Encoding.UTF8, "application/json"));
-        Console.WriteLine($"[DEBUG] Created new index");
-        return resp.IsSuccessStatusCode;
+        return resp.IsSuccessStatusCode;    
     }
 
     public async Task<bool> CreateIndexIfNotExistsAsync(string mappingJson)
@@ -45,15 +43,12 @@ public class ElasticsearchService
     public async Task<string> AddDocumentAsync(Theatre doc)
     {
         var json = JsonSerializer.Serialize(doc);
-        Console.WriteLine($"[DEBUG] Adding document: {json}");
         var resp = await _client.PostAsync($"{_baseUrl}/{_index}/_doc", new StringContent(json, Encoding.UTF8, "application/json"));
         var respJson = await resp.Content.ReadAsStringAsync();
-        Console.WriteLine($"[DEBUG] ES Response: {respJson}");
         using var docObj = JsonDocument.Parse(respJson);
         var id = docObj.RootElement.GetProperty("_id").GetString();
         
         await _client.PostAsync($"{_baseUrl}/{_index}/_refresh", null);
-        Console.WriteLine($"[DEBUG] Index refreshed");
         
         return id;
     }
@@ -66,10 +61,8 @@ public class ElasticsearchService
 
     public async Task<List<Theatre>> SearchAsync(string queryJson)
     {
-        Console.WriteLine($"[DEBUG] Search query: {queryJson}");
         var resp = await _client.PostAsync($"{_baseUrl}/{_index}/_search", new StringContent(queryJson, Encoding.UTF8, "application/json"));
         var respJson = await resp.Content.ReadAsStringAsync();
-        Console.WriteLine($"[DEBUG] ES Search Response: {respJson}");
         using var doc = JsonDocument.Parse(respJson);
         var list = new List<Theatre>();
         foreach (var hit in doc.RootElement.GetProperty("hits").GetProperty("hits").EnumerateArray())
