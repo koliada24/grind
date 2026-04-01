@@ -1,10 +1,10 @@
 public class ProgrammingLanguage
 {
-    public string Id { get; set; } // Elasticsearch document id
-    public string Name { get; set; } // keyword
-    public int YearCreated { get; set; } // integer
-    public string CreatedBy { get; set; } // keyword
-    public string CurrentVersion { get; set; } // keyword
-    public long Popularity { get; set; } // long
-    public string Website { get; set; } // keyword
+    public string Id { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public int YearCreated { get; set; }
+    public string CreatedBy { get; set; } = null!;
+    public string CurrentVersion { get; set; } = null!;
+    public long Popularity { get; set; }
+    public string Website { get; set; } = null!;
 }
