@@ -8,7 +8,7 @@
         Console.WriteLine("Lab 4: Variant 14 - Domain: Theatre, Full-Text Search Implementation");
         Console.WriteLine();
 
-        string esUrl = "https://localhost:9200";
+        string esUrl = "https://localhost:9201";
         string esUser = "elastic";
         string esPass = "8AgeRuzz-0yqSg-iVcLW";
         string index = "theatre";

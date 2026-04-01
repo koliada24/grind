@@ -6,7 +6,7 @@
         Console.WriteLine("Lab 4: Variant 11 - Domain: Programming, Full-Text Search Implementation");
         Console.WriteLine();
 
-        string esUrl = "https://localhost:9200";
+        string esUrl = "https://localhost:9201";
         string esUser = "elastic";
         string esPass = "O9jYdcC29=6sOdkSOrfb";
         string index = "programming_languages";
