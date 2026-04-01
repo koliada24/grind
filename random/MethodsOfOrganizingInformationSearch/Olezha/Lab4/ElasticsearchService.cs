@@ -9,11 +9,19 @@ public class ElasticsearchService
     private readonly string _baseUrl;
     private readonly string _index;
     private readonly string _authHeader;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public ElasticsearchService(string baseUrl, string index, string username, string password)
     {
         _baseUrl = baseUrl.TrimEnd('/');
         _index = index;
+        
+        // JSON serializer options with camelCase naming
+        _jsonOptions = new JsonSerializerOptions 
+        { 
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
         
         // Allow self-signed certificates
         var handler = new HttpClientHandler();
@@ -33,7 +41,7 @@ public class ElasticsearchService
 
     public async Task<string> AddDocumentAsync(ProgrammingLanguage doc)
     {
-        var json = JsonSerializer.Serialize(doc);
+        var json = JsonSerializer.Serialize(doc, _jsonOptions);
         var resp = await _client.PostAsync($"{_baseUrl}/{_index}/_doc", new StringContent(json, Encoding.UTF8, "application/json"));
         var respJson = await resp.Content.ReadAsStringAsync();
         using var docObj = JsonDocument.Parse(respJson);
@@ -55,7 +63,7 @@ public class ElasticsearchService
         foreach (var hit in doc.RootElement.GetProperty("hits").GetProperty("hits").EnumerateArray())
         {
             var src = hit.GetProperty("_source").GetRawText();
-            var pl = JsonSerializer.Deserialize<ProgrammingLanguage>(src);
+            var pl = JsonSerializer.Deserialize<ProgrammingLanguage>(src, _jsonOptions);
             pl.Id = hit.GetProperty("_id").GetString();
             list.Add(pl);
         }

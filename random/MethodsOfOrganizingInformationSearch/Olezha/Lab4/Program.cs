@@ -2,8 +2,8 @@
 {
     static async Task Main(string[] args)
     {
-        Console.WriteLine("=== Programming Languages Metadata Search (Elasticsearch) ===");
-        Console.WriteLine("Variant 11: Domain — Programming, Complex Query — Wildcard");
+        Console.WriteLine("=== Programming Languages Full-Text Search (Elasticsearch) ===");
+        Console.WriteLine("Lab 4: Variant 11 - Domain: Programming, Full-Text Search Implementation");
         Console.WriteLine();
 
         string esUrl = "https://localhost:9200";
@@ -14,6 +14,18 @@
         var es = new ElasticsearchService(esUrl, index, esUser, esPass);
 
         string mapping = @"{
+            ""settings"": {
+                ""analysis"": {
+                    ""analyzer"": {
+                        ""custom_feedback_analyzer"": {
+                            ""type"": ""custom"",
+                            ""char_filter"": [""html_strip""],
+                            ""tokenizer"": ""standard"",
+                            ""filter"": [""lowercase"", ""stop""]
+                        }
+                    }
+                }
+            },
             ""mappings"": {
                 ""properties"": {
                 ""name"": { ""type"": ""keyword"" },
@@ -21,7 +33,10 @@
                 ""createdBy"": { ""type"": ""keyword"" },
                 ""currentVersion"": { ""type"": ""keyword"" },
                 ""popularity"": { ""type"": ""long"" },
-                ""website"": { ""type"": ""keyword"" }
+                ""website"": { ""type"": ""keyword"" },
+                ""description"": { ""type"": ""text"", ""analyzer"": ""standard"" },
+                ""documentation"": { ""type"": ""text"", ""analyzer"": ""english"" },
+                ""communityFeedback"": { ""type"": ""text"", ""analyzer"": ""custom_feedback_analyzer"" }
                 }
             }
         }";
@@ -30,12 +45,16 @@
 
         while (true)
         {
-            Console.WriteLine("\n1. Add document");
+            Console.WriteLine("\n=== Lab 4: Full-Text Search ===");
+            Console.WriteLine("1. Add document");
             Console.WriteLine("2. Delete document");
             Console.WriteLine("3. Search (term)");
             Console.WriteLine("4. Search (range)");
             Console.WriteLine("5. Search (wildcard)");
-            Console.WriteLine("6. List all");
+            Console.WriteLine("6. Search (full-text: description)");
+            Console.WriteLine("7. Search (full-text: documentation)");
+            Console.WriteLine("8. Search (full-text: community feedback)");
+            Console.WriteLine("9. List all");
             Console.WriteLine("0. Exit");
             Console.Write("Select: ");
             var choice = Console.ReadLine();
@@ -60,6 +79,15 @@
                         await SearchWildcard(es);
                         break;
                     case "6":
+                        await SearchDescription(es);
+                        break;
+                    case "7":
+                        await SearchDocumentation(es);
+                        break;
+                    case "8":
+                        await SearchCommunityFeedback(es);
+                        break;
+                    case "9":
                         await ListAll(es);
                         break;
                 }
@@ -86,6 +114,12 @@
         doc.Popularity = long.TryParse(Console.ReadLine(), out long p) ? p : 0;
         Console.Write("Website: ");
         doc.Website = Console.ReadLine() ?? "";
+        Console.Write("Description (text): ");
+        doc.Description = Console.ReadLine() ?? "";
+        Console.Write("Documentation (text): ");
+        doc.Documentation = Console.ReadLine() ?? "";
+        Console.Write("Community feedback (text): ");
+        doc.CommunityFeedback = Console.ReadLine() ?? "";
         var id = await es.AddDocumentAsync(doc);
         Console.WriteLine($"Added with id: {id}");
     }
@@ -140,6 +174,33 @@
         PrintList(res);
     }
 
+    static async Task SearchDescription(ElasticsearchService es)
+    {
+        Console.Write("Search in description (query): ");
+        var query_text = Console.ReadLine() ?? "";
+        var query = $"{{ \"query\": {{ \"match\": {{ \"description\": {{ \"query\": \"{query_text}\" }} }} }} }}";
+        var res = await es.SearchAsync(query);
+        PrintList(res);
+    }
+
+    static async Task SearchDocumentation(ElasticsearchService es)
+    {
+        Console.Write("Search in documentation (query): ");
+        var query_text = Console.ReadLine() ?? "";
+        var query = $"{{ \"query\": {{ \"match\": {{ \"documentation\": {{ \"query\": \"{query_text}\" }} }} }} }}";
+        var res = await es.SearchAsync(query);
+        PrintList(res);
+    }
+
+    static async Task SearchCommunityFeedback(ElasticsearchService es)
+    {
+        Console.Write("Search in community feedback (query): ");
+        var query_text = Console.ReadLine() ?? "";
+        var query = $"{{ \"query\": {{ \"match\": {{ \"communityFeedback\": {{ \"query\": \"{query_text}\" }} }} }} }}";
+        var res = await es.SearchAsync(query);
+        PrintList(res);
+    }
+
     static void PrintList(List<ProgrammingLanguage> list)
     {
         if (list.Count == 0)
@@ -149,7 +210,7 @@
         }
         foreach (var doc in list)
         {
-            Console.WriteLine($"Id: {doc.Id}\n  Name: {doc.Name}\n  Year: {doc.YearCreated}\n  Created by: {doc.CreatedBy}\n  Version: {doc.CurrentVersion}\n  Popularity: {doc.Popularity}\n  Website: {doc.Website}\n");
+            Console.WriteLine($"Id: {doc.Id}\n  Name: {doc.Name}\n  Year: {doc.YearCreated}\n  Created by: {doc.CreatedBy}\n  Version: {doc.CurrentVersion}\n  Popularity: {doc.Popularity}\n  Website: {doc.Website}\n  Description: {doc.Description}\n  Documentation: {doc.Documentation}\n  Community Feedback: {doc.CommunityFeedback}\n");
         }
     }
 }

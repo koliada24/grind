@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 public class ElasticsearchService
 {
@@ -7,11 +8,19 @@ public class ElasticsearchService
     private readonly string _baseUrl;
     private readonly string _index;
     private readonly string _authHeader;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public ElasticsearchService(string baseUrl, string index, string username, string password)
     {
         _baseUrl = baseUrl.TrimEnd('/');
         _index = index;
+        
+        // JSON serializer options with camelCase naming
+        _jsonOptions = new JsonSerializerOptions 
+        { 
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
         
         // Allow self-signed certificates
         var handler = new HttpClientHandler();
@@ -47,7 +56,7 @@ public class ElasticsearchService
 
     public async Task<string> AddDocumentAsync(Theatre doc)
     {
-        var json = JsonSerializer.Serialize(doc);
+        var json = JsonSerializer.Serialize(doc, _jsonOptions);
         Console.WriteLine($"[DEBUG] Adding document: {json}");
         var resp = await _client.PostAsync($"{_baseUrl}/{_index}/_doc", new StringContent(json, Encoding.UTF8, "application/json"));
         var respJson = await resp.Content.ReadAsStringAsync();
@@ -79,7 +88,7 @@ public class ElasticsearchService
         foreach (var hit in doc.RootElement.GetProperty("hits").GetProperty("hits").EnumerateArray())
         {
             var src = hit.GetProperty("_source").GetRawText();
-            var theatre = JsonSerializer.Deserialize<Theatre>(src);
+            var theatre = JsonSerializer.Deserialize<Theatre>(src, _jsonOptions);
             theatre.Id = hit.GetProperty("_id").GetString();
             list.Add(theatre);
         }

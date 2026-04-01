@@ -4,8 +4,8 @@
     {
         System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
-        Console.WriteLine("=== Theatre Metadata Search (Elasticsearch) ===");
-        Console.WriteLine("Variant 14: Domain — Theatre, Complex Query — Wildcard");
+        Console.WriteLine("=== Theatre Full-Text Search (Elasticsearch) ===");
+        Console.WriteLine("Lab 4: Variant 14 - Domain: Theatre, Full-Text Search Implementation");
         Console.WriteLine();
 
         string esUrl = "https://localhost:9200";
@@ -16,6 +16,18 @@
         var es = new ElasticsearchService(esUrl, index, esUser, esPass);
 
         string mapping = @"{
+            ""settings"": {
+                ""analysis"": {
+                    ""analyzer"": {
+                        ""custom_synopsis_analyzer"": {
+                            ""type"": ""custom"",
+                            ""char_filter"": [""html_strip""],
+                            ""tokenizer"": ""standard"",
+                            ""filter"": [""lowercase"", ""stop""]
+                        }
+                    }
+                }
+            },
             ""mappings"": {
                 ""properties"": {
                 ""title"": { ""type"": ""keyword"" },
@@ -24,7 +36,10 @@
                 ""director"": { ""type"": ""keyword"" },
                 ""mainActor"": { ""type"": ""keyword"" },
                 ""rating"": { ""type"": ""integer"" },
-                ""website"": { ""type"": ""keyword"" }
+                ""website"": { ""type"": ""keyword"" },
+                ""description"": { ""type"": ""text"", ""analyzer"": ""standard"" },
+                ""castReviews"": { ""type"": ""text"", ""analyzer"": ""english"" },
+                ""synopsis"": { ""type"": ""text"", ""analyzer"": ""custom_synopsis_analyzer"" }
                 }
             }
         }";
@@ -33,12 +48,16 @@
 
         while (true)
         {
-            Console.WriteLine("\n1. Add document");
+            Console.WriteLine("\n=== Lab 4: Full-Text Search ===");
+            Console.WriteLine("1. Add document");
             Console.WriteLine("2. Delete document");
             Console.WriteLine("3. Search (term)");
             Console.WriteLine("4. Search (range)");
             Console.WriteLine("5. Search (wildcard)");
-            Console.WriteLine("6. List all");
+            Console.WriteLine("6. Search (full-text: description)");
+            Console.WriteLine("7. Search (full-text: cast reviews)");
+            Console.WriteLine("8. Search (full-text: synopsis)");
+            Console.WriteLine("9. List all");
             Console.WriteLine("0. Exit");
             Console.Write("Select: ");
             var choice = Console.ReadLine();
@@ -63,6 +82,15 @@
                         await SearchWildcard(es);
                         break;
                     case "6":
+                        await SearchDescription(es);
+                        break;
+                    case "7":
+                        await SearchCastReviews(es);
+                        break;
+                    case "8":
+                        await SearchSynopsis(es);
+                        break;
+                    case "9":
                         await ListAll(es);
                         break;
                 }
@@ -91,6 +119,12 @@
         doc.Rating = int.TryParse(Console.ReadLine(), out int r) ? r : 0;
         Console.Write("Website: ");
         doc.Website = Console.ReadLine() ?? "";
+        Console.Write("Description (text): ");
+        doc.Description = Console.ReadLine() ?? "";
+        Console.Write("Cast reviews (text): ");
+        doc.CastReviews = Console.ReadLine() ?? "";
+        Console.Write("Synopsis (text): ");
+        doc.Synopsis = Console.ReadLine() ?? "";
         var id = await es.AddDocumentAsync(doc);
         Console.WriteLine($"Added with id: {id}");
     }
@@ -145,6 +179,33 @@
         PrintList(res);
     }
 
+    static async Task SearchDescription(ElasticsearchService es)
+    {
+        Console.Write("Search in description (query): ");
+        var query_text = Console.ReadLine() ?? "";
+        var query = $"{{ \"query\": {{ \"match\": {{ \"description\": {{ \"query\": \"{query_text}\" }} }} }} }}";
+        var res = await es.SearchAsync(query);
+        PrintList(res);
+    }
+
+    static async Task SearchCastReviews(ElasticsearchService es)
+    {
+        Console.Write("Search in cast reviews (query): ");
+        var query_text = Console.ReadLine() ?? "";
+        var query = $"{{ \"query\": {{ \"match\": {{ \"castReviews\": {{ \"query\": \"{query_text}\" }} }} }} }}";
+        var res = await es.SearchAsync(query);
+        PrintList(res);
+    }
+
+    static async Task SearchSynopsis(ElasticsearchService es)
+    {
+        Console.Write("Search in synopsis (query): ");
+        var query_text = Console.ReadLine() ?? "";
+        var query = $"{{ \"query\": {{ \"match\": {{ \"synopsis\": {{ \"query\": \"{query_text}\" }} }} }} }}";
+        var res = await es.SearchAsync(query);
+        PrintList(res);
+    }
+
     static void PrintList(List<Theatre> list)
     {
         if (list.Count == 0)
@@ -154,7 +215,7 @@
         }
         foreach (var doc in list)
         {
-            Console.WriteLine($"Id: {doc.Id}\n  Title: {doc.Title}\n  Author: {doc.Author}\n  Year premiere: {doc.YearPremiere}\n  Director: {doc.Director}\n  Main actor: {doc.MainActor}\n  Rating: {doc.Rating}\n  Website: {doc.Website}\n");
+            Console.WriteLine($"Id: {doc.Id}\n  Title: {doc.Title}\n  Author: {doc.Author}\n  Year premiere: {doc.YearPremiere}\n  Director: {doc.Director}\n  Main actor: {doc.MainActor}\n  Rating: {doc.Rating}\n  Website: {doc.Website}\n  Description: {doc.Description}\n  Cast Reviews: {doc.CastReviews}\n  Synopsis: {doc.Synopsis}\n");
         }
     }
 }
