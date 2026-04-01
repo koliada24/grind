@@ -10,7 +10,7 @@
 
         string esUrl = "https://localhost:9201";
         string esUser = "elastic";
-        string esPass = "8AgeRuzz-0yqSg-iVcLW";
+        string esPass = "*T*4DCnmL5q1*GYpc1Lk";
         string index = "theatre";
 
         var es = new ElasticsearchService(esUrl, index, esUser, esPass);

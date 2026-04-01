@@ -8,7 +8,7 @@
 
         string esUrl = "https://localhost:9201";
         string esUser = "elastic";
-        string esPass = "O9jYdcC29=6sOdkSOrfb";
+        string esPass = "*T*4DCnmL5q1*GYpc1Lk";
         string index = "programming_languages";
 
         var es = new ElasticsearchService(esUrl, index, esUser, esPass);
